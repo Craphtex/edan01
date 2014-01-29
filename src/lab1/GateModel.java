@@ -23,13 +23,14 @@ public class GateModel {
 
         // search for a solution and print results
         Search<IntVar> search = new DepthFirstSearch<IntVar>();
+        search.setSolutionListener(new PrintOutListener<IntVar>());
         SelectChoicePoint<IntVar> select = new InputOrderSelect<IntVar>(store, v,
                 new IndomainMin<IntVar>());
         boolean result = search.labeling(store, select);
+        
         if (result) {
             System.out.println("Solution:");
             System.out.printf("a:%d b:%d c:%d", a.value(), b.value(), s.value());
         } else System.out.println("No solution");
-
     }
 }
