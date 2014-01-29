@@ -1,11 +1,13 @@
-package test;
+package lab1;
 
-import org.jacop.core.*;
-import org.jacop.constraints.*;
+import org.jacop.constraints.XneqY;
+import org.jacop.core.IntVar;
+import org.jacop.core.Store;
 import org.jacop.search.*;
 
-public class Sudoku {
+public class GateModel {
     public static void main(String[] args) {
+        // Something to start from
         Store store = new Store(); // define FD store
         int size = 9;
         // define finite domain variables
