@@ -28,7 +28,7 @@ public class GateModel {
         boolean result = search.labeling(store, select);
         if (result) {
             System.out.println("Solution:");
-            System.out.println(a + " & " + b + " => " + s);
+            System.out.printf("a:%d b:%d c:%d", a.value(), b.value(), s.value());
         } else System.out.println("No solution");
 
     }
