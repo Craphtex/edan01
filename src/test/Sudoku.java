@@ -4,6 +4,9 @@ import org.jacop.core.*;
 import org.jacop.constraints.*;
 import org.jacop.search.*;
 
+//LARS
+// skrev en kommentar
+
 public class Sudoku {
     public static void main(String[] args) {
         Store store = new Store(); // define FD store
