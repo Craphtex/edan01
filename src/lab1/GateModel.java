@@ -1,6 +1,6 @@
 package lab1;
 
-import org.jacop.constraints.AndBool;
+import org.jacop.constraints.*;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.search.DepthFirstSearch;
@@ -15,16 +15,27 @@ public class GateModel {
         // Something to start from
         Store store = new Store(); // define FD store
         // define finite domain variables
-        IntVar a = new IntVar(store, "a", 0, 1);
-        IntVar b = new IntVar(store, "b", 0, 1);
-        IntVar c = new IntVar(store, "c", 0, 1);
-        IntVar ab = new IntVar(store, "ab", 0, 1);
-        IntVar s = new IntVar(store, "s", 0, 1);
-        IntVar[] v = new IntVar[]{a, b, c, ab, s};
+        IntVar In1 = new IntVar(store, "In1", 0, 1);
+        IntVar In2 = new IntVar(store, "In2", 0, 1);
+        IntVar C = new IntVar(store, "C", 0, 1);
+        IntVar T1 = new IntVar(store, "T1", 0, 1);
+        IntVar T2 = new IntVar(store, "T2", 0, 1);
+        IntVar T3 = new IntVar(store, "T3", 0, 1);
+        IntVar S = new IntVar(store, "S", 0, 1);
+        IntVar Carry = new IntVar(store, "Carry", 0, 1);
+        IntVar[] v = new IntVar[]{In1, In2, C, T1, T2, T3, S, Carry};
 
-        store.impose(new AndBool(new IntVar[]{a, b}, ab));
-        store.impose(new AndBool(new IntVar[]{ab, c}, s));
+        Constraint x1 = new XorBool(new IntVar[]{In1, In2}, T1);
+        Constraint x2 = new XorBool(new IntVar[]{T1, C}, S);
+        Constraint a1 = new AndBool(new IntVar[]{In1, In2}, T2);
+        Constraint a2 = new AndBool(new IntVar[]{T1, C}, T3);
+        Constraint o1 = new OrBool(new IntVar[]{T2, T3}, Carry);
 
+        store.impose(x1);
+        store.impose(x2);
+        store.impose(a1);
+        store.impose(a2);
+        store.impose(o1);
 
         // search for a solution and print results
         Search<IntVar> search = new DepthFirstSearch<IntVar>();
@@ -37,10 +48,10 @@ public class GateModel {
 
 
         if (result) {
-            System.out.println("a  b  c  ab s");
+            System.out.println("In1 In2 C   T1  T2  T3  S   Carry");
             for (int i = 1; i <= search.getSolutionListener().solutionsNo(); i++) {
                 for (int j = 0; j < search.getSolution(i).length; j++)
-                    System.out.print(search.getSolution(i)[j] + "  ");
+                    System.out.print(search.getSolution(i)[j] + "   ");
                 System.out.println();
             }
 
