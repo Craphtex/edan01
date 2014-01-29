@@ -23,24 +23,30 @@ public class GateModel {
         IntVar c = new IntVar(store,"c",0,1);
         IntVar ab = new IntVar(store,"ab",0,1);
         IntVar s = new IntVar(store,"s",0,1);
-        IntVar[] v = new IntVar[]{a,b,c};
+        IntVar[] v = new IntVar[]{a,b,c, ab, s};
 
-        IntVar[] andAB = new IntVar[]{a,b};
-        IntVar[] andABC = new IntVar[]{ab,c};
-        
-        store.impose(new AndBool(andAB, ab));
-        store.impose(new AndBool(andABC,s));
+        store.impose(new AndBool(new IntVar[]{a,b}, ab));
+        store.impose(new AndBool(new IntVar[]{ab,c},s));
+
 
         // search for a solution and print results
         Search<IntVar> search = new DepthFirstSearch<IntVar>();
         search.setSolutionListener(new PrintOutListener<IntVar>());
         SelectChoicePoint<IntVar> select = new InputOrderSelect<IntVar>(store, v,
                 new IndomainMin<IntVar>());
+        search.getSolutionListener().searchAll(true);
+        search.getSolutionListener().recordSolutions(true);
         boolean result = search.labeling(store, select);
-        
+
+
         if (result) {
-            System.out.println("Solution:");
-            System.out.printf("a:%d b:%d c:%d   a&b&c=%d", a.value(), b.value(),c.value(), s.value());
+            System.out.println("a  b  c  ab s");
+            for (int i=1; i<=search.getSolutionListener().solutionsNo(); i++){
+                for (int j=0; j<search.getSolution(i).length; j++)
+                    System.out.print(search.getSolution(i)[j]+"  ");
+                System.out.println();
+            }
+
         } else System.out.println("No solution");
     }
 }
