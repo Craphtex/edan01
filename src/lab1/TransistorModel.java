@@ -27,29 +27,13 @@ public class TransistorModel {
 		IntVar co = new IntVar(store, "co", 0, 1);
 		IntVar s = new IntVar(store, "si", 0, 1);
 		
-		IntVar[] v = new IntVar[] { a, b, c,co};
+		IntVar[] v = new IntVar[] { a, b, c,co,s};
 
 		inv(store, coi,co);
 		inv(store,si,s);
 		carryModule(store, a, b, c, coi);
-		
-		// IntVar T3 = new IntVar(store, "T3", 0, 1);
-		// IntVar S = new IntVar(store, "S", 0, 1);
-		// IntVar Carry = new IntVar(store, "Carry", 0, 1);
-		//
-		// Constraint x1 = new XorBool(new IntVar[] { In1, In2 }, T1);
-		// Constraint x2 = new XorBool(new IntVar[] { T1, C }, S);
-		// Constraint a1 = new AndBool(new IntVar[] { In1, In2 }, T2);
-		// Constraint a2 = new AndBool(new IntVar[] { T1, C }, T3);
-		// Constraint o1 = new OrBool(new IntVar[] { T2, T3 }, Carry);
-		//
-		// store.impose(x1);
-		// store.impose(x2);
-		// store.impose(a1);
-		// store.impose(a2);
-		// store.impose(o1);
+		sumModule(store, a, b, c, coi, si);
 
-		// search for a solution and print results
 		Search<IntVar> search = new DepthFirstSearch<IntVar>();
 		search.setSolutionListener(new PrintOutListener<IntVar>());
 		SelectChoicePoint<IntVar> select = new InputOrderSelect<IntVar>(store,
@@ -105,9 +89,33 @@ public class TransistorModel {
 		
 	}
 
-	public static void sumModule(Store store, IntVar a, IntVar b, IntVar coi,
+	public static void sumModule(Store store, IntVar a, IntVar b,IntVar c, IntVar coi,
 			IntVar si) {
-
+		IntVar t1 = new IntVar(store,"",0,1);
+		IntVar t2 = new IntVar(store,"",0,1);
+		IntVar t3 = new IntVar(store,"",0,1);
+		IntVar t4 = new IntVar(store,"",0,1);
+		IntVar t5 = new IntVar(store,"",0,1);
+		IntVar t6 = new IntVar(store,"",0,1);
+		
+		store.impose(ntrans(store,vdd,t1,a));
+		store.impose(ntrans(store,vdd,t1,b));
+		store.impose(ntrans(store,vdd,t1,c));
+		store.impose(ntrans(store,vdd,t3,a));
+		store.impose(ntrans(store,t3,t4,b));
+		store.impose(ntrans(store,t4,si,c));
+		store.impose(ntrans(store,t1,si,coi));
+		
+		
+		store.impose(ptrans(store,si,t2,coi));
+		store.impose(ptrans(store,t2,gnd,a));
+		store.impose(ptrans(store,t2,gnd,b));
+		store.impose(ptrans(store,t2,gnd,c));
+		store.impose(ptrans(store,si,t5,c));
+		store.impose(ptrans(store,t5,t6,b));
+		store.impose(ptrans(store,t6,gnd,a));
+		
+		
 	}
 
 }
