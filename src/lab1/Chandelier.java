@@ -1,9 +1,5 @@
 package lab1;
 
-import org.jacop.constraints.Alldiff;
-import org.jacop.constraints.AndBool;
-import org.jacop.constraints.Not;
-import org.jacop.constraints.OrBool;
 import org.jacop.constraints.Sum;
 import org.jacop.constraints.XeqY;
 import org.jacop.core.IntVar;
