@@ -4,6 +4,7 @@ import org.jacop.constraints.*;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.search.*;
+import org.jacop.set.constraints.XeqA;
 
 public class TransistorModel {
     public static void main(String[] args) {
@@ -55,6 +56,7 @@ public class TransistorModel {
     }
 
     public static Constraint ntrans(IntVar X, IntVar Y, IntVar B){
-        return null;
+    	//return new IfThen(new XeqA(X, ), thenC)
+    	return null;
     }
 }
