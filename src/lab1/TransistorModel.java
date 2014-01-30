@@ -7,10 +7,17 @@ import org.jacop.search.*;
 import org.jacop.set.constraints.XeqA;
 
 public class TransistorModel {
+	
+	static IntVar vdd;
+	static IntVar gnd;
 	public static void main(String[] args) {
 		// Something to start from
 		Store store = new Store(); // define FD store
 		// define finite domain variables
+		
+		vdd = new IntVar(store,"vdd",1,1);
+		gnd = new IntVar(store,"gnd",0,0);
+		
 		IntVar A = new IntVar(store, "A", 0, 1);
 		IntVar B = new IntVar(store, "B", 0, 1);
 		IntVar C = new IntVar(store, "C", 0, 1);
@@ -56,16 +63,18 @@ public class TransistorModel {
 	}
 
 	public static Constraint ntrans(Store store, IntVar x, IntVar y, IntVar b) {
-		return new IfThen(new XeqY(b, new IntVar(store, "", 0, 0)), new XeqY(x,
+		return new IfThen(new XeqY(b, gnd), new XeqY(x,
 				y));
 	}
 
 	public static Constraint ptrans(Store store, IntVar x, IntVar y, IntVar b) {
-		return new IfThen(new XeqY(b, new IntVar(store, "", 1, 1)), new XeqY(x,
+		return new IfThen(new XeqY(b, vdd), new XeqY(x,
 				y));
 	}
 	
 	public static Constraint inv(Store store, IntVar in, IntVar out) {
+		
+		
 		return null;
 	}
 
