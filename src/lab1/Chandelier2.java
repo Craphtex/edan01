@@ -1,11 +1,9 @@
 package lab1;
 
+import java.util.ArrayList;
+
 import org.jacop.constraints.Alldiff;
-import org.jacop.constraints.AndBool;
-import org.jacop.constraints.Not;
-import org.jacop.constraints.OrBool;
-import org.jacop.constraints.Sum;
-import org.jacop.constraints.XeqY;
+import org.jacop.constraints.Linear;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.search.DepthFirstSearch;
@@ -31,43 +29,71 @@ public class Chandelier2 {
         IntVar i = new IntVar(store,"i",1,9);
         
         
-        //store.impose(new Alldiff(new IntVar[]{a,b,c,d,e,f,g,h,i}));
-
-        IntVar x = new IntVar(store,"x",1,100);
-        IntVar y = new IntVar(store,"y",1,100);
-        IntVar z = new IntVar(store,"z",1,100);
+        store.impose(new Alldiff(new IntVar[]{a,b,c,d,e,f,g,h,i}));
+        ArrayList<IntVar> p1w = new ArrayList<IntVar>();
+        p1w.add(a);
+        p1w.add(b);
+        p1w.add(c);
+        ArrayList<Integer> p1p = new ArrayList<Integer>();
+        p1p.add(2);
+        p1p.add(-1);
+        p1p.add(-2);
+        store.impose(new Linear(store, p1w, p1p, "=", 0));
+        
+        ArrayList<IntVar> p2w = new ArrayList<IntVar>();
+        p2w.add(d);
+        p2w.add(e);
+        p2w.add(f);
+        ArrayList<Integer> p2p = new ArrayList<Integer>();
+        p2p.add(2);
+        p2p.add(1);
+        p2p.add(-1);
+        store.impose(new Linear(store, p2w, p2p, "=", 0));
+        
+        ArrayList<IntVar> p3w = new ArrayList<IntVar>();
+        p3w.add(g);
+        p3w.add(h);
+        p3w.add(i);
+        ArrayList<Integer> p3p = new ArrayList<Integer>();
+        p3p.add(2);
+        p3p.add(1);
+        p3p.add(-3);
+        store.impose(new Linear(store, p3w, p3p, "=", 0));
         
         
-        store.impose(new Sum(new IntVar[]{a,b,c},y));
-        store.impose(new Sum(new IntVar[]{d,e,f},z));
-        store.impose(new Sum(new IntVar[]{g,h,i},x));
+        ArrayList<IntVar> p0w = new ArrayList<IntVar>();
+        p0w.add(a);
+        p0w.add(b);
+        p0w.add(c);
+        p0w.add(d);
+        p0w.add(e);
+        p0w.add(f);
+        p0w.add(g);
+        p0w.add(h);
+        p0w.add(i);
         
-        IntVar yy = new IntVar(store,"yy",0,100);
-        store.impose(new Sum(new IntVar[]{y,y,y},yy));
-        IntVar xz = new IntVar(store,"xz",0,100);
-        store.impose(new Sum(new IntVar[]{z,z,x,x,x},xz));
-        store.impose(new XeqY(yy,xz));
+        ArrayList<Integer> p0p = new ArrayList<Integer>();
+        p0p.add(3);
+        p0p.add(3);
+        p0p.add(3);
         
-        IntVar bc = new IntVar(store,"bc",0,100);
-        store.impose(new Sum(new IntVar[]{b,c,c},bc));
-        IntVar aa = new IntVar(store,"aa",0,100);
-        store.impose(new Sum(new IntVar[]{a,a},aa));
-        store.impose(new XeqY(bc,aa));
-                
-        IntVar de = new IntVar(store,"de",0,100);
-        store.impose(new Sum(new IntVar[]{d,d,e},de));
-        IntVar ff = new IntVar(store,"ff",0,100);
-        store.impose(new Sum(new IntVar[]{f,f},ff));
-        store.impose(new XeqY(de,ff));
+        p0p.add(-2);
+        p0p.add(-2);
+        p0p.add(-2);
         
-        IntVar gh = new IntVar(store,"gh",0,100);
-        store.impose(new Sum(new IntVar[]{g,g,h},gh));
-        IntVar ii = new IntVar(store,"ii",0,100);
-        store.impose(new Sum(new IntVar[]{i,i,i},ii));
-        store.impose(new XeqY(gh,ii));
+        p0p.add(-3);
+        p0p.add(-3);
+        p0p.add(-3);
         
         
-        IntVar[] v = new IntVar[]{a,b,c,d,e,f,g,h,i,x,y,z,bc,aa,de,ff,gh,ii,yy,xz };
+        store.impose(new Linear(store, p0w, p0p, "=", 0));
+        
+        
+        
+        
+        
+        
+        IntVar[] v = new IntVar[]{a,b,c,d,e,f,g,h,i };
         
         // search for a solution and print results
         Search<IntVar> search = new DepthFirstSearch<IntVar>();
