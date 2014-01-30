@@ -1,5 +1,6 @@
 package lab1;
 
+import org.jacop.constraints.Alldiff;
 import org.jacop.constraints.Sum;
 import org.jacop.constraints.XeqY;
 import org.jacop.core.IntVar;
@@ -27,7 +28,7 @@ public class Chandelier {
         IntVar i = new IntVar(store,"i",1,9);
         
         
-        //store.impose(new Alldiff(new IntVar[]{a,b,c,d,e,f,g,h,i}));
+        store.impose(new Alldiff(new IntVar[]{a,b,c,d,e,f,g,h,i}));
 
         IntVar x = new IntVar(store,"x",1,100);
         IntVar y = new IntVar(store,"y",1,100);
@@ -53,7 +54,7 @@ public class Chandelier {
         IntVar de = new IntVar(store,"de",0,100);
         store.impose(new Sum(new IntVar[]{d,d,e},de));
         IntVar ff = new IntVar(store,"ff",0,100);
-        store.impose(new Sum(new IntVar[]{f,f},ff));
+        store.impose(new Sum(new IntVar[]{f},ff));
         store.impose(new XeqY(de,ff));
         
         IntVar gh = new IntVar(store,"gh",0,100);

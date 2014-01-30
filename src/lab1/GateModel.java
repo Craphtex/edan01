@@ -23,7 +23,7 @@ public class GateModel {
         IntVar T3 = new IntVar(store, "T3", 0, 1);
         IntVar S = new IntVar(store, "S", 0, 1);
         IntVar Carry = new IntVar(store, "Carry", 0, 1);
-        IntVar[] v = new IntVar[]{In1, In2, C, T1, T2, T3, S, Carry};
+        IntVar[] v = new IntVar[]{In1, In2, C, S, Carry};
 
         Constraint x1 = new XorBool(new IntVar[]{In1, In2}, T1);
         Constraint x2 = new XorBool(new IntVar[]{T1, C}, S);
@@ -48,7 +48,7 @@ public class GateModel {
 
 
         if (result) {
-            System.out.println("In1 In2 C   T1  T2  T3  S   Carry");
+            System.out.println("In1 In2 C   S   Carry");
             for (int i = 1; i <= search.getSolutionListener().solutionsNo(); i++) {
                 for (int j = 0; j < search.getSolution(i).length; j++)
                     System.out.print(search.getSolution(i)[j] + "   ");
