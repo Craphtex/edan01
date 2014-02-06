@@ -12,7 +12,7 @@ import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
 import org.jacop.search.SmallestDomain;
 
-public class Scedule {
+public class Schedule {
     private Store store;
 
     private IntVar[] week;
@@ -21,14 +21,14 @@ public class Scedule {
         long T1, T2, T;
         T1 = System.currentTimeMillis();
 
-        new Scedule();
+        new Schedule();
 
         T2 = System.currentTimeMillis();
         T = T2 - T1;
         System.out.println("\n\t*** Execution time = " + T + " ms");
     }
 
-    public Scedule() {
+    public Schedule() {
         store = new Store();
 
         IntVar Mo = new IntVar(store, "Monday", 0, 30);
