@@ -38,21 +38,41 @@ public class Schedule {
         store = new Store();
 
         // Variables for number of workers starting on each day of the week.
-        IntVar Monday = new IntVar(store, "Monday", 0, 30);
-        IntVar Tuesday = new IntVar(store, "Tuesday", 0, 30);
-        IntVar Wednesday = new IntVar(store, "Wednesday", 0, 30);
-        IntVar Thursday = new IntVar(store, "Thursday", 0, 30);
-        IntVar Friday = new IntVar(store, "Friday", 0, 30);
-        IntVar Saturday = new IntVar(store, "Saturday", 0, 30);
-        IntVar Sunday = new IntVar(store, "Sunday", 0, 30);
+        IntVar fullTimeMonday = new IntVar(store, "FullTime-Monday", 0, 30);
+        IntVar fullTimeTuesday = new IntVar(store, "FullTime-Tuesday", 0, 30);
+        IntVar fullTimeWednesday = new IntVar(store, "FullTime-Wednesday", 0, 30);
+        IntVar fullTimeThursday = new IntVar(store, "FullTime-Thursday", 0, 30);
+        IntVar fullTimeFriday = new IntVar(store, "FullTime-Friday", 0, 30);
+        IntVar fullTimeSaturday = new IntVar(store, "FullTime-Saturday", 0, 30);
+        IntVar fullTimeSunday = new IntVar(store, "FullTime-Sunday", 0, 30);
+        IntVar partTimeMonday = new IntVar(store, "PartTime-Monday", 0, 30);
+        IntVar partTimeTuesday = new IntVar(store, "PartTime-Tuesday", 0, 30);
+        IntVar partTimeWednesday = new IntVar(store, "PartTime-Wednesday", 0, 30);
+        IntVar partTimeThursday = new IntVar(store, "PartTime-Thursday", 0, 30);
+        IntVar partTimeFriday = new IntVar(store, "PartTime-Friday", 0, 30);
+        IntVar partTimeSaturday = new IntVar(store, "PartTime-Saturday", 0, 30);
+        IntVar partTimeSunday = new IntVar(store, "PartTime-Sunday", 0, 30);
 
         // Creating a vector representing all the workers for a week.
-        week = new IntVar[]{Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday};
+        week = new IntVar[]{fullTimeMonday,
+                fullTimeTuesday,
+                fullTimeWednesday,
+                fullTimeThursday,
+                fullTimeFriday,
+                fullTimeSaturday,
+                fullTimeSunday,
+                partTimeMonday,
+                partTimeTuesday,
+                partTimeWednesday,
+                partTimeThursday,
+                partTimeFriday,
+                partTimeSaturday,
+                partTimeSunday};
 
         // Putting up workers constraints
         int[] requiredAmountOfWorkers = new int[]{5, 7, 7, 10, 16, 18, 12};
-        int[] costs = new int[week.length + week.length];
-        IntVar[] workers = new IntVar[week.length + week.length];
+        int[] costs = new int[week.length];
+        IntVar[] workers = new IntVar[week.length];
         for (int weekday = 0; weekday < week.length; weekday++) {
             // For full time workers
             IntVar fullTimers = new IntVar(store, "Full timer: " + weekday, 0, 100);
