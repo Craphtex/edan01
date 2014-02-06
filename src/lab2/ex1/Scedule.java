@@ -76,6 +76,9 @@ public class Scedule {
 		if (Result) {
 			System.out.println("\n*** Yes");
 			System.out.println("Solution : " + java.util.Arrays.asList(week));
+			System.out.println("Solution : " + java.util.Arrays.asList(fullSum));
+			System.out.println("Solution : " + java.util.Arrays.asList(partSum));
+			
 		} else
 			System.out.println("\n*** No");
 
