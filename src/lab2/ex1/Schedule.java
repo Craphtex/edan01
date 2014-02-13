@@ -1,5 +1,6 @@
 package lab2.ex1;
 
+import org.jacop.constraints.Constraint;
 import org.jacop.constraints.Sum;
 import org.jacop.constraints.SumWeight;
 import org.jacop.core.IntVar;
@@ -13,124 +14,126 @@ import org.jacop.search.SimpleSelect;
 import org.jacop.search.SmallestDomain;
 
 public class Schedule {
-    private Store store;
+	static Store store;
 
-    private IntVar[] week;
+	private static final int FULL_TIME_WORKER_COST_PER_DAY = 100;
+	private static final int PART_TIME_WORKER_COST_PER_DAY = 150;
+	private static final String[] weekdays = { "Monday     ", "Tuesday     ",
+			"Wednesday", "Thursday", "Friday     ", "Saturday", "Sunday    " };
+	private static final int[] DAILY_MINIMAL_WORKFORCE = new int[] { 5, 7, 7, 10, 16, 18, 12 };
 
-    public static void main(String[] args) {
-        long T1, T2, T;
-        T1 = System.currentTimeMillis();
+	public static void main(String[] args) {
+		long T1, T2, T;
+		T1 = System.currentTimeMillis();
 
-        new Schedule();
+		schedule();
 
-        T2 = System.currentTimeMillis();
-        T = T2 - T1;
-        System.out.println("\n\t*** Execution time = " + T + " ms");
-    }
+		T2 = System.currentTimeMillis();
+		T = T2 - T1;
+		System.out.println("\n\t*** Execution time = " + T + " ms");
+	}
 
-    public Schedule() {
-        store = new Store();
+	static void schedule() {
+		store = new Store();
 
-        IntVar Mo = new IntVar(store, "Monday", 0, 30);
-        IntVar Tu = new IntVar(store, "Tuesday", 0, 30);
-        IntVar We = new IntVar(store, "Wednesday", 0, 30);
-        IntVar Th = new IntVar(store, "Thursday", 0, 30);
-        IntVar Fr = new IntVar(store, "Friday", 0, 30);
-        IntVar Sa = new IntVar(store, "Saturday", 0, 30);
-        IntVar Su = new IntVar(store, "Sunday", 0, 30);
+		IntVar FullTimeMonday = new IntVar(store, "Heltid Måndag", 0, 300);
+		IntVar FullTimeTuesday = new IntVar(store, "Heltid Tisdag", 0, 300);
+		IntVar FullTimeWednesday = new IntVar(store, "Heltid Onsdag", 0, 300);
+		IntVar FullTimeThursday = new IntVar(store, "Heltid Torsdag", 0, 300);
+		IntVar FullTimeFriday = new IntVar(store, "Heltid Fredag", 0, 300);
+		IntVar FullTimeSaturday = new IntVar(store, "Heltid Lördag", 0, 300);
+		IntVar FullTimeSunday = new IntVar(store, "Heltid Söndag", 0, 300);
 
-        week = new IntVar[]{Mo, Tu, We, Th, Fr, Sa, Su};
+		IntVar FullTimeWorkers = new IntVar(store, "Alla heltidare", 0, 2100);
+		IntVar[] FullTimeWorkerGroup = new IntVar[] { FullTimeMonday,
+				FullTimeTuesday, FullTimeWednesday, FullTimeThursday,
+				FullTimeFriday, FullTimeSaturday, FullTimeSunday };
+		store.impose(new Sum(FullTimeWorkerGroup, FullTimeWorkers));
 
-        IntVar sumMoFull = new IntVar(store, 0, 100);
-        store.impose(new Sum(new IntVar[]{Mo, Su, Sa, Fr, Th}, sumMoFull));
+		IntVar PartTimeMonday = new IntVar(store, "Deltid Måndag", 0, 30);
+		IntVar PartTimeTuesday = new IntVar(store, "Deltid Tisdag", 0, 30);
+		IntVar PartTimeWednesday = new IntVar(store, "Deltid Onsdag", 0, 30);
+		IntVar PartTimeThursday = new IntVar(store, "Deltid Torsdag", 0, 30);
+		IntVar PartTimeFriday = new IntVar(store, "Deltid Fredag", 0, 30);
+		IntVar PartTimeSaturday = new IntVar(store, "Deltid Lördag", 0, 30);
+		IntVar PartTimeSunday = new IntVar(store, "Deltid Söndag", 0, 30);
 
-        IntVar[] fullSum = new IntVar[7];
-        for (int i = 0; i < week.length; i++) {
-            fullSum[i] = worker(i, 5);
-        }
+		IntVar PartTimeWorkers = new IntVar(store, "Alla deltidare", 0, 210);
+		IntVar[] PartTimeWorkerGroup = new IntVar[] { PartTimeMonday,
+				PartTimeTuesday, PartTimeWednesday, PartTimeThursday,
+				PartTimeFriday, PartTimeSaturday, PartTimeSunday };
+		store.impose(new Sum(PartTimeWorkerGroup, PartTimeWorkers));
 
-        IntVar[] partSum = new IntVar[7];
-        for (int i = 0; i < week.length; i++) {
-            partSum[i] = worker(i, 2);
-        }
+		IntVar[] allWorkers = new IntVar[] { FullTimeMonday, FullTimeTuesday,
+				FullTimeWednesday, FullTimeThursday, FullTimeFriday,
+				FullTimeSaturday, FullTimeSunday, PartTimeMonday,
+				PartTimeTuesday, PartTimeWednesday, PartTimeThursday,
+				PartTimeFriday, PartTimeSaturday, PartTimeSunday };
 
-        int[] workers = new int[]{17, 13, 15, 19, 14, 16, 11};
-        for (int i = 0; i < week.length; i++) {
-            IntVar sum = new IntVar(store, workers[i], 100);
-            store.impose(new Sum(new IntVar[]{fullSum[i], partSum[i]}, sum));
-        }
+		IntVar[] sumOfADays = new IntVar[7];
 
-        IntVar cost = createCost(fullSum, partSum, 100, 150);
 
-        System.out.println("Number of variables: " + store.size()
-                + "\nNumber of constraints: " + store.numberConstraints());
+		for (int i = 0; i < 7; i++) {
+			IntVar tempFull = new IntVar(store, 0, 100);
+			IntVar tempPart = new IntVar(store, 0, 100);
+			store.impose(numberOfWorkersOnDay(FullTimeWorkerGroup, tempFull, i,
+					5));
+			store.impose(numberOfWorkersOnDay(PartTimeWorkerGroup, tempPart, i,
+					2));
+			IntVar dayLabour = new IntVar(store, DAILY_MINIMAL_WORKFORCE[i], 100);
+			sumOfADays[i] = dayLabour;
+			store.impose(new Sum(new IntVar[] { tempFull, tempPart }, dayLabour));
+		}
 
-        Search<IntVar> label = new DepthFirstSearch<IntVar>();
-        SelectChoicePoint<IntVar> select = new SimpleSelect<IntVar>(week,
-                new SmallestDomain<IntVar>(), new IndomainMin<IntVar>());
-        label.setSolutionListener(new PrintOutListener<IntVar>());
-        boolean Result = label.labeling(store, select, cost);
+		IntVar cost = new IntVar(store, 0, 25000);
+		store.impose(new SumWeight(new IntVar[] { FullTimeWorkers,
+				PartTimeWorkers }, new int[] {
+				5 * FULL_TIME_WORKER_COST_PER_DAY,
+				2 * PART_TIME_WORKER_COST_PER_DAY }, cost));
 
-        if (Result) {
-            System.out.println("\n*** Yes");
-            System.out.println("Solution : " + java.util.Arrays.asList(week));
-            System.out.println("Solution : " + java.util.Arrays.asList(fullSum));
-            System.out.println("Solution : " + java.util.Arrays.asList(partSum));
-            System.out.println("Cost : " + cost);
+		System.out.println("Number of variables: " + store.size()
+				+ "\nNumber of constraints: " + store.numberConstraints());
 
-        } else
-            System.out.println("\n*** No");
+		Search<IntVar> label = new DepthFirstSearch<IntVar>();
+		SelectChoicePoint<IntVar> select = new SimpleSelect<IntVar>(allWorkers,
+				new SmallestDomain<IntVar>(), new IndomainMin<IntVar>());
+		label.setSolutionListener(new PrintOutListener<IntVar>());
+		boolean Result = label.labeling(store, select, cost);
 
-    }
+		if (Result) {
+			System.out.println("\n*** Solution found");
 
-    private IntVar worker(int start, int length) {
-        IntVar[] temp = new IntVar[length];
-        for (int i = 0; i < length; i++) {
-            temp[i] = week[(start - i + week.length) % week.length];
-        }
-        String name = length == 5 ? "Full" : "Part";
-        String day = "";
-        switch (start) {
-            case 0:
-                day = "Monday";
-                break;
-            case 1:
-                day = "Tuesday";
-                break;
-            case 2:
-                day = "Wednesday";
-                break;
-            case 3:
-                day = "Thursday";
-                break;
-            case 4:
-                day = "Friday";
-                break;
-            case 5:
-                day = "Saturday";
-                break;
-            case 6:
-                day = "Sunday";
-                break;
-        }
-        IntVar sum = new IntVar(store, name + "-" + day, 0, 100);
-        store.impose(new Sum(temp, sum));
-        return sum;
-    }
+			System.out.println("\t\tFull\tPart\tWorkers on given Day");
+			for (int i = 0; i < 7; i++) {
+				System.out.printf("%s\t%d\t%d\t%d\n", weekdays[i],
+						FullTimeWorkerGroup[i].value(),
+						PartTimeWorkerGroup[i].value(), sumOfADays[i].value());
+			}
+			System.out.println("Cost: " + cost.value());
 
-    private IntVar createCost(IntVar[] full, IntVar[] part, int fullCost, int partCost) {
-        IntVar sum = new IntVar(store, "Cost", 0, 50000);
-        int[] cost = new int[full.length + part.length];
-        IntVar[] total = new IntVar[cost.length];
-        for (int i = 0; i < full.length; i++) {
-            total[i] = full[i];
-            cost[i] = fullCost;
-        }
-        for (int i = 0; i < part.length; i++) {
-            total[full.length + i] = part[i];
-            cost[full.length + i] = partCost;
-        }
-        store.impose(new SumWeight(total, cost, sum));
-        return sum;
-    }
+		} else
+			System.out.println("\n*** No solution");
+	}
+
+	/**
+	 * Creates a constraint that sums up a "duration" long list of week days
+	 * 
+	 * @param week
+	 *            list of weekdays
+	 * @param sum
+	 *            the sum of workers working on "weekday"
+	 * @param weekday
+	 *            the day in focus
+	 * @param duration
+	 *            how many days back it shall look
+	 * @return a constraint with the sum of the days equals the "sum" variable
+	 */
+	private static Constraint numberOfWorkersOnDay(IntVar[] week, IntVar sum,
+			int weekday, int duration) {
+		IntVar[] temp = new IntVar[duration];
+		for (int i = 0; i < duration; i++) {
+			temp[i] = week[(weekday - i + week.length) % week.length];
+		}
+		return new Sum(temp, sum);
+	}
 }
