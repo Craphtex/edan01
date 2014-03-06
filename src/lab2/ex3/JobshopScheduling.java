@@ -73,7 +73,7 @@ public class JobshopScheduling {
 			lastTimes[i] = jobs[i].getLastEndTime();
 		}
 		
-		IntVar lastJob = new IntVar(store,"lastJob",0,2500);
+		IntVar lastJob = new IntVar(store,"lastJob",0,100);
 		
 		store.impose(new Max(lastTimes,lastJob));
 		
