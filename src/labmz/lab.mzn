@@ -16,10 +16,13 @@ var {7,8,9,10}: C9;
 var {1}: C10;
 
 
+var 1..15: tank;
+var 1..500: cost;
 
 array[1..nCities] of var int: cities = [C1,C2,C3,C4,C5,C6,C7,C8,C9,C10];
 
 constraint subcircuit(cities);
+
 
 solve satisfy;
 
