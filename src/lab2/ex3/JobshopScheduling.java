@@ -77,7 +77,6 @@ public class JobshopScheduling {
 		
 		store.impose(new Max(lastTimes,lastJob));
 		
-		// search for a solution and print results
 		Search<IntVar> search = new DepthFirstSearch<IntVar>();
 		
 		SelectChoicePoint<IntVar> select = new SimpleSelect<IntVar>(v, 
@@ -85,8 +84,6 @@ public class JobshopScheduling {
 			    new IndomainMin<IntVar>()); 
 		
 		search.setSolutionListener(new PrintOutListener<IntVar>());
-//		SelectChoicePoint<IntVar> select = new InputOrderSelect<IntVar>(store,
-//				v, new IndomainMin<IntVar>());
 		boolean result = search.labeling(store, select);
 
 		if (result) {

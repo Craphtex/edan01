@@ -55,8 +55,6 @@ public class Graph extends JFrame {
 					
 					String text = rectangle[0].id();
 					
-					System.out.println(text.substring(1,2));
-					
 					int color = Integer.parseInt(text.substring(1,2));
 					g.setColor(colors[color-1]);
 					g.drawRect(x*widthMultiplyer+20, frameHeight*i+20, width*widthMultiplyer, frameHeight-20);
