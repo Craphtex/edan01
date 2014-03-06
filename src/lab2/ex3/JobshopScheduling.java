@@ -84,7 +84,7 @@ public class JobshopScheduling {
 			    new IndomainMin<IntVar>()); 
 		
 		search.setSolutionListener(new PrintOutListener<IntVar>());
-		boolean result = search.labeling(store, select);
+		boolean result = search.labeling(store, select,lastJob);
 
 		if (result) {
 			new Graph(machines);
