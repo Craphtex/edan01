@@ -54,6 +54,7 @@ public class Post {
 			   "\nNumber of constraints: " + store.numberConstraints());
 		
 	Search<IntVar> label = new DepthFirstSearch<IntVar>(); 
+	
 	SelectChoicePoint<IntVar> select = new SimpleSelect<IntVar>(week, 
 						    new SmallestDomain<IntVar>(), 
 						    new IndomainMin<IntVar>()); 
